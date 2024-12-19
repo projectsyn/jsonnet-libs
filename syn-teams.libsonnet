@@ -82,6 +82,54 @@ local teamApplicationMap =
 
 
 /**
+ * \brief A map from application instances to the assigned team
+ *
+ * This raises an error if any component instances that are defined in
+ * `inv.applications` aren't assigned to a team (and are explicitly removed in
+ * the owner team) or if any instances are assigned to multiple teams.
+ *
+ * \returns a map from instance names to the assigned team (including the team owning the cluster)
+ */
+local applicationTeamMap =
+  local appMap = std.foldl(
+    function(prev, instance)
+      prev {
+        [instance]: std.foldl(
+          function(teams, team)
+            if std.member(teamApplicationMap[team], instance) then
+              teams + [ team ]
+            else
+              teams,
+          std.objectFields(teamApplicationMap),
+          []
+        ),
+      },
+    allInstances,
+    {},
+  );
+
+  local nonUniqueMap = {
+    [app]: appMap[app]
+    for app in std.objectFields(appMap)
+    if std.length(appMap[app]) > 1
+  };
+  if std.length(nonUniqueMap) > 0 then
+    error 'Some applications are assigned to multiple teams: %s' % [
+      std.join(', ', std.map(
+        function(app) '%s: %s' % [ app, nonUniqueMap[app] ],
+        std.objectFields(nonUniqueMap)
+      )),
+    ]
+  else
+    // flatten map values into single values now that we've verified that
+    // there's no non-unique assignments
+    {
+      [app]: appMap[app][0]
+      for app in std.objectFields(appMap)
+    };
+
+
+/**
  * \brief Returns the team for the given application or null.
  *
  * It does so by looking at the top level `syn` parameter of a Commodore
@@ -163,6 +211,7 @@ local teams(includeOwner=false) =
 
 {
   // Values
+  applicationTeamMap: applicationTeamMap,
   teamApplicationMap: teamApplicationMap,
 
   // Functions
