@@ -144,6 +144,23 @@ local teamForApplication(app) =
 local applicationsForTeam(team) = std.get(teamApplicationMap, team, null);
 
 
+/**
+ * \brief Return list of teams which are responsible for at least one application that's present in the cluster.
+ *
+ * \arg includeOwner whether to include the owner team in the return value
+ *
+ * \returns a list of team names which are assigned at least one application that's present in the cluster
+ */
+local teams(includeOwner=false) =
+  [
+    team
+    for team in std.objectFields(teamApplicationMap)
+    if
+      (includeOwner || team != inv.parameters.syn.owner) &&
+      std.length(teamApplicationMap[team]) > 0
+  ];
+
+
 {
   // Values
   teamApplicationMap: teamApplicationMap,
@@ -152,4 +169,5 @@ local applicationsForTeam(team) = std.get(teamApplicationMap, team, null);
   appKeys: appKeys,
   teamForApplication: teamForApplication,
   applicationsForTeam: applicationsForTeam,
+  teams: teams,
 }
