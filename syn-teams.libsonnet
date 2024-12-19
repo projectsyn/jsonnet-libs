@@ -175,6 +175,7 @@ local teams(includeOwner=false) =
   // Values
   applicationTeamMap: applicationTeamMap,
   teamApplicationMap: teamApplicationMap,
+  owner: syn_owner,
 
   // Functions
   appKeys: appKeys,
