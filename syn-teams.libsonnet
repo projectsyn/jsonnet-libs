@@ -171,6 +171,20 @@ local teams(includeOwner=false) =
   ];
 
 
+/**
+ * \brief Check if component instance with the given name supports ArgoCD * multi-tenancy
+ *
+ * \arg instance the component instance
+ *
+ * \returns true if component sets `._metadata.multi_tenant=true`, false otherwise
+ */
+local isMultiTenantAware(instance) =
+  local ikey = appKeys(instance)[0];
+  local iparams = std.get(inv.parameters, ikey, {});
+  local imeta = std.get(iparams, '_metadata', {});
+  std.get(imeta, 'multi_tenant', false);
+
+
 {
   // Values
   applicationTeamMap: applicationTeamMap,
@@ -182,4 +196,5 @@ local teams(includeOwner=false) =
   teamForApplication: teamForApplication,
   applicationsForTeam: applicationsForTeam,
   teams: teams,
+  isMultiTenantAware: isMultiTenantAware,
 }
