@@ -125,7 +125,7 @@ local applicationTeamMap =
     // flatten map values into single values now that we've verified that
     // there's no non-unique assignments
     {
-      [app]: appMap[app][0]
+      [app]: if std.length(appMap[app]) > 0 then appMap[app][0]
       for app in std.objectFields(appMap)
     };
 
