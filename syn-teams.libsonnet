@@ -130,56 +130,17 @@ local applicationTeamMap =
 
 
 /**
- * \brief Returns the team for the given application or null.
+ * \brief Extract the responsible team for an instance from the applicationTeamMap defined above.
  *
- * It does so by looking at the top level `syn` parameter of a Commodore
- * inventory. The syn parameter should look roughly like this.
+ * Raises an error if the cluster contains instances that aren't assigned to
+ * any team (taking into account the syn.owner fallback assignment) or if any
+ * instances are owned by multiple teams.
  *
- *   syn:
- *     owner: clumsy-donkeys
- *     teams:
- *       chubby-cockroaches:
- *         instances:
- *           - superb-visualization
- *       lovable-lizards:
- *         instances:
- *           - apartment-cats
+ * \arg app the instance name to lookup in the map
  *
- * The application is first looked up in the instances of the teams, if no team is found, owner is used as fallback.
- * An error is thrown if the application is found belonging to multiple teams.
- *
- * \arg app
- *    The application name. Can be the merged `inventory().params._instance` or an (aliased) application name.
- * \return
- *    The team name or `null` if no team configuration is present.
+ * \returns a list of applications assigned to the team or `null` if the application doesn't exist in the map.
  */
-local teamForApplication(app) =
-  local params = inv.parameters;
-  local lookup = function(app)
-    if std.objectHas(params, 'syn') && std.objectHas(params.syn, 'teams') then
-      local teams = params.syn.teams;
-      local teamsForApp = std.foldl(
-        function(prev, team)
-          if std.objectHas(teams, team) && std.objectHas(teams[team], 'instances') && std.member(com.renderArray(teams[team].instances), app) then
-            prev + [ team ]
-          else
-            prev,
-        std.objectFields(teams),
-        [],
-      );
-      if std.length(teamsForApp) == 0 then
-        null
-      else if std.length(teamsForApp) == 1 then
-        teamsForApp[0]
-      else
-        error 'application `%s` is in multiple teams: %s' % [ app, std.join(', ', teamsForApp) ];
-
-  local teams = std.prune(std.map(lookup, appKeys(app, true)));
-
-  if std.length(teams) > 0 then
-    teams[0]
-  else if std.objectHas(params, 'syn') && std.objectHas(params.syn, 'owner') then
-    params.syn.owner;
+local teamForApplication(app) = std.get(applicationTeamMap, app);
 
 
 /**
