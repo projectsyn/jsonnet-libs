@@ -73,8 +73,9 @@ local teamApplicationMap =
     std.set(std.flattenArrays(std.objectValues(teamMap)))
   );
 
-  if std.length(unassigned) > 0 then
-    error "Some applications aren't assigned to any team: %s" % [
+  if syn_owner != null && std.length(unassigned) > 0 then
+    error "Cluster owner is set to %s but some applications aren't assigned to any team: %s" % [
+      syn_owner,
       std.join(', ', unassigned),
     ]
   else
