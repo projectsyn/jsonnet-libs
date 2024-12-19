@@ -133,6 +133,17 @@ local teamForApplication(app) =
   else if std.objectHas(params, 'syn') && std.objectHas(params.syn, 'owner') then
     params.syn.owner;
 
+
+/**
+ * \brief Extract the list of applications for the given team from the teamApplicationMap defined above.
+ *
+ * \arg team the team name to lookup in the map
+ *
+ * \returns a list of applications assigned to the team or null if the team doesn't exist in the map.
+ */
+local applicationsForTeam(team) = std.get(teamApplicationMap, team, null);
+
+
 {
   // Values
   teamApplicationMap: teamApplicationMap,
@@ -140,4 +151,5 @@ local teamForApplication(app) =
   // Functions
   appKeys: appKeys,
   teamForApplication: teamForApplication,
+  applicationsForTeam: applicationsForTeam,
 }
