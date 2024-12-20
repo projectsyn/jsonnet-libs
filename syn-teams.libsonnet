@@ -119,22 +119,13 @@ local teamApplicationMap =
  * \returns a map from instance names to the assigned team (including the team owning the cluster)
  */
 local applicationTeamMap =
-  local appMap = std.foldl(
-    function(prev, instance)
-      prev {
-        [instance]: std.foldl(
-          function(teams, team)
-            if std.member(teamApplicationMap[team], instance) then
-              teams + [ team ]
-            else
-              teams,
-          std.objectFields(teamApplicationMap),
-          []
-        ),
-      },
-    allInstances,
-    {},
-  );
+  local appMap = {
+    [instance]: std.prune([
+      if std.member(teamApplicationMap[team], instance) then team
+      for team in std.objectFields(teamApplicationMap)
+    ])
+    for instance in allInstances
+  };
 
   local nonUniqueMap = {
     [app]: appMap[app]
