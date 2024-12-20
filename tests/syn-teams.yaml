@@ -1,0 +1,43 @@
+applications:
+  - small-sun
+  - cool-breeze
+  - cool-breeze as red-flower
+  - fragrant-smoke
+
+parameters:
+  syn:
+    owner: sparkling-sound
+    teams:
+      solitary-wood:
+        instances:
+          - small-sun
+      lingering-fog:
+        instances:
+          - morning-thunder
+      fragrant-flower:
+        instances:
+          - ~small-sun
+          - red-flower
+
+
+expected:
+  teams:
+    - solitary-wood
+    - fragrant-flower
+  all_teams:
+    - sparkling-sound
+    - solitary-wood
+    - fragrant-flower
+  appsForTeam:
+    fragrant-flower:
+      - red-flower
+    sparkling-sound:
+      - cool-breeze
+      - fragrant-smoke
+    solitary-wood:
+      - small-sun
+  teamForApp:
+    cool-breeze: sparkling-sound
+    fragrant-smoke: sparkling-sound
+    red-flower: fragrant-flower
+    small-sun: solitary-wood

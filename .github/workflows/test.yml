@@ -1,0 +1,37 @@
+---
+name: Lint & Test
+
+"on":
+  pull_request: {}
+
+jobs:
+  jsonnetfmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          make jsonnetfmt_check
+
+  test_libraries_discover_cases:
+    name: Discover golden test cases
+    runs-on: ubuntu-latest
+    outputs:
+      instances: ${{ steps.instances.outputs.instances }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find test cases
+        id: instances
+        run: |
+          echo "instances=$(make -s list_test_instances)" >> "$GITHUB_OUTPUT"
+
+  test_libraries:
+    needs: test_libraries_discover_cases
+    strategy:
+      matrix:
+        instance: ${{ fromJSON(needs.test_libraries_discover_cases.outputs.instances) }}
+    runs-on: ubuntu-latest
+    name: 'Golden test: ${{ matrix.instance }}'
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          make golden-diff -e instance=${{ matrix.instance }}
