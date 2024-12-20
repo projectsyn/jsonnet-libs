@@ -1,5 +1,32 @@
-/* NOTE: This Jsonnet library is intended for use with Commodore
+/**
+ * \file syn-teams.libsonnet
+ * \brief Functionality to parse and validate the contents of inventory parameter `syn.teams` and `syn.owner`
+ *
+ * NOTE: This Jsonnet library is intended for use with Commodore. The library
+ * can be used in component code as well as postprocessing filters.
+ *
+ * This library provides a number of helpers to make it easier for components to
+ * use the fields `teams` and `owner` of inventory parameter `syn`.
+ *
+ * Primarily, the library will read the parameters and render two objects, one
+ * which maps team names to a list of component instances for which the team is
+ * responsibe, and another one which maps each component instance in the cluster
+ * to the responsible team.
+ *
+ * The library takes into account that the team indicated in `syn.owner` should
+ * be responsible for all component instances which aren't explicitly assigned
+ * to a team. Further, the library validates that no instance is assigned to
+ * multiple teams. Since instances can be removed from a team's (including the
+ * owner teams's) list of instances, the library also validates that each
+ * instance in the cluster is assigned to a team.
+ *
+ * Components which use the library should make sure that their test cases
+ * contain well-formed values for `applications`, `parameters.syn.owner` and
+ * `parameters.syn.teams`. Otherwise, some usages of this component may raise
+ * errors about missing component instances, or missing ownership
+ * configurations.
  */
+
 local com = import 'lib/commodore.libjsonnet';
 local inv = com.inventory();
 
