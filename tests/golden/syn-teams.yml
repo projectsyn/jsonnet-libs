@@ -1,0 +1,61 @@
+{
+   "all_teams": [
+      "fragrant-flower",
+      "solitary-wood",
+      "sparkling-sound"
+   ],
+   "appKeys": {
+      "foo": [
+         "foo"
+      ],
+      "foo-bar": [
+         "foo_bar"
+      ],
+      "foo-bar as bar": [
+         "bar",
+         "foo_bar"
+      ],
+      "foo-bar as bar-qux": [
+         "bar_qux",
+         "foo_bar"
+      ]
+   },
+   "appKeysRaw": {
+      "foo": [
+         "foo"
+      ],
+      "foo-bar": [
+         "foo-bar"
+      ],
+      "foo-bar as bar": [
+         "bar",
+         "foo-bar"
+      ],
+      "foo-bar as bar-qux": [
+         "bar-qux",
+         "foo-bar"
+      ]
+   },
+   "appsForTeam": {
+      "fragrant-flower": [
+         "red-flower"
+      ],
+      "solitary-wood": [
+         "small-sun"
+      ],
+      "sparkling-sound": [
+         "cool-breeze",
+         "fragrant-smoke"
+      ]
+   },
+   "teamForApp": {
+      "cool-breeze": "sparkling-sound",
+      "fragrant-smoke": "sparkling-sound",
+      "red-flower": "fragrant-flower",
+      "small-sun": "solitary-wood"
+   },
+   "teams": [
+      "fragrant-flower",
+      "solitary-wood"
+   ]
+}
