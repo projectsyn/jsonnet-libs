@@ -184,7 +184,7 @@ local teams(includeOwner=false) =
     team
     for team in std.objectFields(teamApplicationMap)
     if
-      (includeOwner || team != inv.parameters.syn.owner) &&
+      (includeOwner || team != syn_owner) &&
       std.length(teamApplicationMap[team]) > 0
   ];
 
