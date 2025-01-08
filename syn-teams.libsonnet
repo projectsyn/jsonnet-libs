@@ -60,10 +60,15 @@ local appKeys(name, raw=false) =
 
 // Extract all instances from `inv.applications`.
 // The design doc (SDD-0030) specifies that entries in `syn.<team>.instances`
-// must be component instances, so we don't need to worry about the component
-// name for instantiated components.
+// must be component instances.
+// However, Commodore doesn't require that instance-aware components generate
+// an ArgoCD application per instance, and some existing components generate a
+// single ArgoCD application for all their instances. For such components,
+// individual instances can't be assigned to a team, but the whole component
+// can be assigned. To accommodate this design choice, we keep both the
+// instance and component name in allInstances for instantiated components.
 local allInstances = std.set(
-  std.map(function(app) appKeys(app, true)[0], inv.applications)
+  std.flattenArrays(std.map(function(app) appKeys(app, true), inv.applications))
 );
 
 
