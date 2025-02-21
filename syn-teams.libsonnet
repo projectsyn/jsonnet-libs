@@ -197,15 +197,18 @@ local teams(includeOwner=false) =
 /**
  * \brief Check if component instance with the given name supports ArgoCD * multi-tenancy
  *
- * \arg instance the component instance
+ * NOTE: This function must be called with the component name, since we won't
+ * have the component metadata in the instance's parameters key.
+ *
+ * \arg component the component name for the instance
  *
  * \returns true if component sets `._metadata.multi_tenant=true`, false otherwise
  */
-local isMultiTenantAware(instance) =
-  local ikey = appKeys(instance)[0];
-  local iparams = std.get(inv.parameters, ikey, {});
-  local imeta = std.get(iparams, '_metadata', {});
-  std.get(imeta, 'multi_tenant', false);
+local isMultiTenantAware(component) =
+  local ckey = appKeys(component)[0];
+  local cparams = std.get(inv.parameters, ckey, {});
+  local cmeta = std.get(cparams, '_metadata', {});
+  std.get(cmeta, 'multi_tenant', false);
 
 
 {
