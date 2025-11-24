@@ -8,7 +8,7 @@ jobs:
   jsonnetfmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: |
           make jsonnetfmt_check
 
@@ -18,7 +18,7 @@ jobs:
     outputs:
       instances: ${{ steps.instances.outputs.instances }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Find test cases
         id: instances
         run: |
@@ -32,6 +32,6 @@ jobs:
     runs-on: ubuntu-latest
     name: 'Golden test: ${{ matrix.instance }}'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: |
           make golden-diff -e instance=${{ matrix.instance }}
