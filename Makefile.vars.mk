@@ -7,7 +7,7 @@ else
 endif
 DOCKER_ARGS ?= run --rm -u "$$(id -u):$$(id -g)" --userns=$(DOCKER_USERNS) -w /work -e HOME="/work"
 
-JSONNET_IMAGE      ?= docker.io/bitnami/jsonnet:latest
+JSONNET_IMAGE      ?= ghcr.io/projectsyn/jsonnet:latest
 JSONNET_ENTRYPOINT ?= bash
 JSONNET_DOCKER     ?= $(DOCKER_CMD) $(DOCKER_ARGS) -v "$${PWD}:/work" --entrypoint=$(JSONNET_ENTRYPOINT) $(JSONNET_IMAGE)
 
