@@ -4,7 +4,6 @@ local com = import 'lib/commodore.libjsonnet';
 local inv = com.inventory();
 
 local expected = inv.expected;
-local monitoring_instance = inv.parameters._instance;
 
 local nullR = '__null';
 local fallback_team = inv.parameters.openshift4_monitoring.fallback_team;
@@ -14,7 +13,7 @@ local amConfig = inv.parameters.openshift4_monitoring.alertManagerConfig;
 
 local debugData =
   local rendered = ard.debugConfigMapData(
-    adParams, amConfig, nullR, fallback_team, monitoring_instance
+    adParams, amConfig, nullR, fallback_team,
   );
   local desired = {
     applications: std.manifestJsonMinified(inv.applications),
@@ -34,7 +33,7 @@ local debugData =
 
 local alertmanagerConfig =
   local rendered = ard.alertmanagerConfig(
-    adParams, amConfig, nullR, fallback_team, monitoring_instance
+    adParams, amConfig, nullR, fallback_team
   );
   if rendered != expected.alertmanagerConfig then
     error
