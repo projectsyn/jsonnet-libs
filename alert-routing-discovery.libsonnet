@@ -55,11 +55,11 @@ local discoverNS = function(app)
   else
     ns;
 
-local ownerOrFallbackTeam(fallback_team) =
+local ownerOrFallbackTeam(fallbackTeam) =
   if std.objectHas(params, 'syn') && std.objectHas(params.syn, 'owner') then
     params.syn.owner
   else
-    fallback_team;
+    fallbackTeam;
 
 // teamToNS is a map from a team to namespaces.
 // The inner `std.prune()` is to drop `null` entries from a list that contains
@@ -99,12 +99,14 @@ local teamBasedRouting(adParams, nullReceiver) =
     continue: false,
   } ];
 
-local alertmanagerConfig(adParams, amConfig, nullReceiver, fallback_team) =
+local _nullR = '__alert_routing_discovery_null';
+
+local alertmanagerConfig(adParams, amConfig, nullReceiver=_nullR, fallbackTeam=null) =
   local routes = std.get(amConfig.route, 'routes', []);
   local finalRoute =
-    if ownerOrFallbackTeam(fallback_team) != null then
+    if ownerOrFallbackTeam(fallbackTeam) != null then
       [ {
-        receiver: adParams.team_receiver_format % ownerOrFallbackTeam(fallback_team),
+        receiver: adParams.team_receiver_format % ownerOrFallbackTeam(fallbackTeam),
       } ]
     else
       [ { receiver: nullReceiver } ];
@@ -120,7 +122,7 @@ local alertmanagerConfig(adParams, amConfig, nullReceiver, fallback_team) =
     },
   };
 
-local debugConfigMapData = function(adParams, amConfig, nullReceiver, fallback_team)
+local debugConfigMapData = function(adParams, amConfig, nullReceiver=_nullR, fallbackTeam=null)
   {
     local discoveredNamespaces = std.foldl(function(prev, app) prev { [app]: discoverNS(app) }, inv.applications, {}),
     local discoveredTeams = std.foldl(function(prev, app) prev { [app]: syn_teams.teamForApplication(syn_teams.appKeys(app, true)[0]) }, inv.applications, {}),
@@ -129,7 +131,7 @@ local debugConfigMapData = function(adParams, amConfig, nullReceiver, fallback_t
     apps_without_namespaces: std.manifestYamlDoc(std.foldl(function(prev, app) if discoveredNamespaces[app] == null then prev + [ app ] else prev, std.objectFields(discoveredNamespaces), [])),
     discovered_teams: std.manifestYamlDoc(discoveredTeams),
     proposed_routes: std.manifestYamlDoc(teamBasedRouting(adParams, nullReceiver)),
-    alertmanager: std.manifestYamlDoc(alertmanagerConfig(adParams, amConfig, nullReceiver, fallback_team)),
+    alertmanager: std.manifestYamlDoc(alertmanagerConfig(adParams, amConfig, nullReceiver, fallbackTeam)),
   };
 
 {

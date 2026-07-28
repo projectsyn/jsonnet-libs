@@ -33,7 +33,7 @@ local debugData =
 
 local alertmanagerConfig =
   local rendered = ard.alertmanagerConfig(
-    adParams, amConfig, nullR, fallback_team
+    adParams, amConfig, nullR, fallback_team,
   );
   if rendered != expected.alertmanagerConfig then
     error
