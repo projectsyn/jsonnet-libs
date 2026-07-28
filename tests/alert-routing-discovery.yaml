@@ -1,0 +1,201 @@
+# NOTE(sg): This test inventory is copied from openshift4-monitoring. But the
+# library under test (alert-routing-discovery.libsonnet) should be
+# distribution agnostic.
+applications:
+  - espejote
+  - non-existing
+  - no-ns
+  - ns-string
+  - ns-object
+  - base as ns-in-base
+  - base as ns-overridden
+  - non-existing as still-non-existing
+  - same-ns-1
+  - same-ns-2
+  - openshift4-monitoring
+  - no-ns as no-ns-team
+  - no-ns as no-ns-team2
+  - instance-ns
+
+parameters:
+  _instance: &instance openshift4-monitoring
+
+  syn:
+    owner: clumsy-donkeys
+    teams:
+      chubby-cockroaches:
+        instances:
+          - ns-in-base
+          - ns-overridden
+      lovable-lizards:
+        instances:
+          - ns-object
+          - same-ns-1
+          - same-ns-2
+          - ns-in-base
+          - ~ns-in-base
+          - no-ns-team2
+      sleepy-badgers:
+        instances:
+          - no-ns-team
+
+  espejote:
+    namespace: syn-espejote
+
+  openshift4_monitoring:
+    namespace: openshift-monitoring
+    fallback_team: null
+    alertManagerConfig:
+      receivers:
+        - name: foo
+          opsgenie_configs:
+            - source: null
+      route:
+        routes:
+          - receiver: other
+            matchers:
+              - other = "true"
+    alertManagerAutoDiscovery:
+      append_routes: []
+      debug_config_map: true
+      team_receiver_format: team_default_%s
+      additional_alert_matchers:
+        - 'syn_team = ""'
+      prepend_routes:
+        - matchers:
+            - alertname = Watchdog
+          repeat_interval: 60s
+          receiver: heartbeat
+
+    rules:
+      my-rules:
+        "alert:MyAlert":
+          expr: 'vector(1)'
+          labels:
+            syn_team: yet_another_team
+        "alert:NoLabels":
+          expr: 'vector(1)'
+
+  no_ns: {}
+
+  ns_string:
+    namespace: "ns-string"
+
+  ns_object:
+    namespace:
+      name: "ns-object"
+
+  base:
+    namespace: base
+
+  ns_in_base: {}
+
+  ns_overridden:
+    namespace: overridden
+
+  same_ns_1:
+    namespace: same-ns
+
+  same_ns_2:
+    namespace: same-ns
+
+  instance_ns:
+    # NOTE: we essentially mock `namespace: ${_instance}` here.
+    # For a real inventory, this will resolve to `instance-ns` or an instance
+    # when rendering the actual namespace.
+    namespace: *instance
+
+expected:
+  discovered_namespaces:
+    "base as ns-in-base": base
+    "base as ns-overridden": "overridden"
+    "espejote": syn-espejote
+    "instance-ns": "instance-ns"
+    "no-ns": null
+    "no-ns as no-ns-team": null
+    "no-ns as no-ns-team2": null
+    "non-existing": null
+    "non-existing as still-non-existing": null
+    "ns-object": "ns-object"
+    "ns-string": "ns-string"
+    "openshift4-monitoring": openshift-monitoring
+    "same-ns-1": "same-ns"
+    "same-ns-2": "same-ns"
+  apps_without_namespaces:
+    - no-ns
+    - no-ns as no-ns-team
+    - no-ns as no-ns-team2
+    - non-existing
+    - non-existing as still-non-existing
+  discovered_teams:
+    "base as ns-in-base": "chubby-cockroaches"
+    "base as ns-overridden": "chubby-cockroaches"
+    "espejote": "clumsy-donkeys"
+    "instance-ns": "clumsy-donkeys"
+    "no-ns": "clumsy-donkeys"
+    "no-ns as no-ns-team": "sleepy-badgers"
+    "no-ns as no-ns-team2": "lovable-lizards"
+    "non-existing": "clumsy-donkeys"
+    "non-existing as still-non-existing": "clumsy-donkeys"
+    "ns-object": "lovable-lizards"
+    "ns-string": "clumsy-donkeys"
+    "openshift4-monitoring": "clumsy-donkeys"
+    "same-ns-1": "lovable-lizards"
+    "same-ns-2": "lovable-lizards"
+
+  proposed_routes:
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"base|overridden\""
+        receiver: "team_default_chubby-cockroaches"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"instance-ns|ns-string|openshift-monitoring|syn-espejote\""
+        receiver: "team_default_clumsy-donkeys"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"ns-object|same-ns\""
+        receiver: "team_default_lovable-lizards"
+      - continue: false
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"base|overridden|instance-ns|ns-string|openshift-monitoring|syn-espejote|ns-object|same-ns\""
+        receiver: "__null"
+
+  alertmanagerConfig:
+    receivers:
+    - name: "foo"
+    - name: "__null"
+    route:
+      routes:
+      - matchers:
+        - "alertname = Watchdog"
+        receiver: "heartbeat"
+        repeat_interval: "60s"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"base|overridden\""
+        receiver: "team_default_chubby-cockroaches"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"instance-ns|ns-string|openshift-monitoring|syn-espejote\""
+        receiver: "team_default_clumsy-donkeys"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"ns-object|same-ns\""
+        receiver: "team_default_lovable-lizards"
+      - continue: false
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"base|overridden|instance-ns|ns-string|openshift-monitoring|syn-espejote|ns-object|same-ns\""
+        receiver: "__null"
+      - matchers:
+        - "other = \"true\""
+        receiver: "other"
+      - receiver: "team_default_clumsy-donkeys"
