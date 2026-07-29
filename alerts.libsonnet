@@ -172,4 +172,55 @@ local inv = com.inventory();
         super.rules
       ),
     },
+
+  /**
+   * \brief Function to render rule groups defined in the hierarchy
+   *
+   * This function assumes that the rules are defined in the hierarchy in an
+   * object whose fields each represent a rule group. The function also
+   * assumes that each rule group is defined as an object which uses scheme
+   * '(alert:|record:)rulename' for the field names.
+   *
+   * Option
+   *
+   * \arg rules
+   *   The object to render as rules.
+   * \arg ignoreNames
+   *   Alert names to drop from the rendered rules.
+   * \arg patches
+   *   Rule patches to apply to the rules.
+   *
+   * \return
+   *   A single list suitable to be used in a `PrometheusRule` manifest as
+   *   `spec.groups`.
+   */
+  renderGroups(rules, ignoreNames=[], patches={}):
+    std.filter(
+      function(g) std.length(g.rules) > 0,
+      [
+        $.filterRules(
+          {
+            name: group_name,
+            rules: [
+              local rnamekey = std.splitLimit(rname, ':', 1);
+              $.patchRule(
+                rules[group_name][rname] {
+                  // transform source key into "alert: alertname" or
+                  // "record: recordname"
+                  [rnamekey[0]]: rnamekey[1],
+                },
+                patches=patches,
+                patchName=false,
+              )
+              for rname in std.objectFields(rules[group_name])
+              if rules[group_name][rname] != null
+            ],
+          },
+          ignoreNames=ignoreNames,
+          preserveRecordingRules=true,
+        )
+        for group_name in std.objectFields(rules)
+        if rules[group_name] != null
+      ]
+    ),
 }
