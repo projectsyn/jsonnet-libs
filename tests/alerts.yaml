@@ -1,0 +1,49 @@
+applications:
+  - alerts
+
+parameters:
+  _instance: alerts
+  syn:
+    owner: clumsy-donkeys
+
+  global_config:
+    ignoreNames:
+      - IgnoredAlert
+    customAnnotations:
+      FooIsLow:
+        test: annotation
+
+expected:
+  patchedRules:
+    - alert: SYN_FooIsLow
+      expr: foo < 10
+      annotations:
+        description: Foo is below 10, check Foo generator pipeline
+        summary: Foo < 10
+        test: annotation
+      labels:
+        severity: warning
+        syn: "true"
+        syn_component: alerts
+        syn_team: clumsy-donkeys
+        test: label
+    - alert: SYN_IgnoredAlert
+      expr: vector(1)
+      annotations: {}
+      labels:
+        syn: "true"
+        syn_component: alerts
+        syn_team: clumsy-donkeys
+    - alert: SYN_FooIsExtremelyLow
+      expr: foo < 2
+      annotations:
+        description: Foo is below 2, immediately check Foo generator pipeline
+        summary: Foo < 2
+      labels:
+        severity: critical
+        syn: "true"
+        syn_component: alerts
+        syn_team: clumsy-donkeys
+        test: prefixed patch
+    - record: sum:foo
+      expr: sum(foo)

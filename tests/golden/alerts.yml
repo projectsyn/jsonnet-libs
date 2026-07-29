@@ -1,0 +1,292 @@
+{
+   "filterPatchRules": {
+      "rules": [
+         {
+            "alert": "SYN_FooIsLow",
+            "annotations": {
+               "description": "Foo is below 10, check Foo generator pipeline",
+               "summary": "Foo < 10",
+               "test": "annotation"
+            },
+            "expr": "foo < 10",
+            "labels": {
+               "severity": "warning",
+               "syn": "true",
+               "syn_component": "alerts",
+               "syn_team": "clumsy-donkeys",
+               "test": "label"
+            }
+         },
+         {
+            "alert": "SYN_FooIsExtremelyLow",
+            "annotations": {
+               "description": "Foo is below 2, immediately check Foo generator pipeline",
+               "summary": "Foo < 2"
+            },
+            "expr": "foo < 2",
+            "labels": {
+               "severity": "critical",
+               "syn": "true",
+               "syn_component": "alerts",
+               "syn_team": "clumsy-donkeys",
+               "test": "prefixed patch"
+            }
+         },
+         {
+            "expr": "sum(foo)",
+            "record": "sum:foo"
+         }
+      ]
+   },
+   "filterPatchRulesNoRecording": {
+      "rules": [
+         {
+            "alert": "SYN_FooIsLow",
+            "annotations": {
+               "description": "Foo is below 10, check Foo generator pipeline",
+               "summary": "Foo < 10",
+               "test": "annotation"
+            },
+            "expr": "foo < 10",
+            "labels": {
+               "severity": "warning",
+               "syn": "true",
+               "syn_component": "alerts",
+               "syn_team": "clumsy-donkeys",
+               "test": "label"
+            }
+         },
+         {
+            "alert": "SYN_FooIsExtremelyLow",
+            "annotations": {
+               "description": "Foo is below 2, immediately check Foo generator pipeline",
+               "summary": "Foo < 2"
+            },
+            "expr": "foo < 2",
+            "labels": {
+               "severity": "critical",
+               "syn": "true",
+               "syn_component": "alerts",
+               "syn_team": "clumsy-donkeys",
+               "test": "prefixed patch"
+            }
+         }
+      ]
+   },
+   "filterPatchRulesNoRecordingOrigName": {
+      "rules": [
+         {
+            "alert": "FooIsLow",
+            "annotations": {
+               "description": "Foo is below 10, check Foo generator pipeline",
+               "summary": "Foo < 10",
+               "test": "annotation"
+            },
+            "expr": "foo < 10",
+            "labels": {
+               "severity": "warning",
+               "syn": "true",
+               "syn_component": "alerts",
+               "syn_team": "clumsy-donkeys",
+               "test": "label"
+            }
+         },
+         {
+            "alert": "SYN_FooIsExtremelyLow",
+            "annotations": {
+               "description": "Foo is below 2, immediately check Foo generator pipeline",
+               "summary": "Foo < 2"
+            },
+            "expr": "foo < 2",
+            "labels": {
+               "severity": "critical",
+               "syn": "true",
+               "syn_component": "alerts",
+               "syn_team": "clumsy-donkeys",
+               "test": "prefixed patch"
+            }
+         }
+      ]
+   },
+   "filteredRules": {
+      "rules": [
+         {
+            "alert": "FooIsLow",
+            "annotations": {
+               "description": "Foo is below 10, check Foo generator pipeline",
+               "summary": "Foo < 10"
+            },
+            "expr": "foo < 10",
+            "labels": {
+               "severity": "warning"
+            }
+         },
+         {
+            "expr": "sum(foo)",
+            "record": "sum:foo"
+         }
+      ]
+   },
+   "filteredRulesNoRecording": {
+      "rules": [
+         {
+            "alert": "FooIsLow",
+            "annotations": {
+               "description": "Foo is below 10, check Foo generator pipeline",
+               "summary": "Foo < 10"
+            },
+            "expr": "foo < 10",
+            "labels": {
+               "severity": "warning"
+            }
+         },
+         {
+            "alert": "SYN_FooIsExtremelyLow",
+            "annotations": {
+               "description": "Foo is below 2, immediately check Foo generator pipeline",
+               "summary": "Foo < 2"
+            },
+            "expr": "foo < 2",
+            "labels": {
+               "severity": "critical"
+            }
+         }
+      ]
+   },
+   "patchedRules": [
+      {
+         "alert": "SYN_FooIsLow",
+         "annotations": {
+            "description": "Foo is below 10, check Foo generator pipeline",
+            "summary": "Foo < 10",
+            "test": "annotation"
+         },
+         "expr": "foo < 10",
+         "labels": {
+            "severity": "warning",
+            "syn": "true",
+            "syn_component": "alerts",
+            "syn_team": "clumsy-donkeys",
+            "test": "label"
+         }
+      },
+      {
+         "alert": "SYN_IgnoredAlert",
+         "annotations": { },
+         "expr": "vector(1)",
+         "labels": {
+            "syn": "true",
+            "syn_component": "alerts",
+            "syn_team": "clumsy-donkeys"
+         }
+      },
+      {
+         "alert": "SYN_FooIsExtremelyLow",
+         "annotations": {
+            "description": "Foo is below 2, immediately check Foo generator pipeline",
+            "summary": "Foo < 2"
+         },
+         "expr": "foo < 2",
+         "labels": {
+            "severity": "critical",
+            "syn": "true",
+            "syn_component": "alerts",
+            "syn_team": "clumsy-donkeys",
+            "test": "prefixed patch"
+         }
+      },
+      {
+         "expr": "sum(foo)",
+         "record": "sum:foo"
+      }
+   ],
+   "patchedRulesOrigName": [
+      {
+         "alert": "FooIsLow",
+         "annotations": {
+            "description": "Foo is below 10, check Foo generator pipeline",
+            "summary": "Foo < 10",
+            "test": "annotation"
+         },
+         "expr": "foo < 10",
+         "labels": {
+            "severity": "warning",
+            "syn": "true",
+            "syn_component": "alerts",
+            "syn_team": "clumsy-donkeys",
+            "test": "label"
+         }
+      },
+      {
+         "alert": "IgnoredAlert",
+         "annotations": { },
+         "expr": "vector(1)",
+         "labels": {
+            "syn": "true",
+            "syn_component": "alerts",
+            "syn_team": "clumsy-donkeys"
+         }
+      },
+      {
+         "alert": "SYN_FooIsExtremelyLow",
+         "annotations": {
+            "description": "Foo is below 2, immediately check Foo generator pipeline",
+            "summary": "Foo < 2"
+         },
+         "expr": "foo < 2",
+         "labels": {
+            "severity": "critical",
+            "syn": "true",
+            "syn_component": "alerts",
+            "syn_team": "clumsy-donkeys",
+            "test": "prefixed patch"
+         }
+      },
+      {
+         "expr": "sum(foo)",
+         "record": "sum:foo"
+      }
+   ],
+   "renderedGroups": [
+      {
+         "name": "test_group",
+         "rules": [
+            {
+               "alert": "FooIsLow",
+               "annotations": {
+                  "description": "Foo is below 10, check Foo generator pipeline",
+                  "summary": "Foo < 10",
+                  "test": "annotation"
+               },
+               "expr": "foo < 10",
+               "labels": {
+                  "severity": "warning",
+                  "syn": "true",
+                  "syn_component": "alerts",
+                  "syn_team": "clumsy-donkeys",
+                  "test": "label"
+               }
+            },
+            {
+               "alert": "SYN_FooIsExtremelyLow",
+               "annotations": {
+                  "description": "Foo is below 2, immediately check Foo generator pipeline",
+                  "summary": "Foo < 2"
+               },
+               "expr": "foo < 2",
+               "labels": {
+                  "severity": "critical",
+                  "syn": "true",
+                  "syn_component": "alerts",
+                  "syn_team": "clumsy-donkeys",
+                  "test": "prefixed patch"
+               }
+            },
+            {
+               "expr": "sum(foo)",
+               "record": "sum:foo"
+            }
+         ]
+      }
+   ]
+}
