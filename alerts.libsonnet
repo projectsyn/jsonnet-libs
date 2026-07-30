@@ -11,12 +11,62 @@ local syn_teams = import 'syn-teams.libsonnet';
 
 local inv = com.inventory();
 
-// TODO(sg): move prom.generateRules() into this library so we can reuse it
-// across components.
-
 {
+  /**
+   * \brief global configuration used when filtering and patching alerts
+   *
+   * This field is intended to be set by a monitoring stack component (e.g.
+   * openshift4-monitoring) in order to apply its global alert parameters.
+   * This allows users of the monitoring component to apply some alert tuning
+   * (e.g. disabling a noisy alert or adding a custom annotation to a set of
+   * alerts) through a single component parameter, instead of first having to
+   * figure out which component defines the alert, so it can be disabled or
+   * modified.
+   *
+   * Example usage:
+   *
+   * ```
+   * local inv = kap.inventory();
+   * local alerts = (import 'syn/alerts.libsonnet') {
+   *   global_alert_params+:: std.get(
+   *     inv.parameters,
+   *     'openshift4_monitoring', // <1>
+   *     { alerts : {} }          // <2>
+   *   ).alerts,                  // <3>
+   * };
+   * ```
+   * <1> Replace with the parameter key of your monitoring component.
+   * <2> We use std.get() with a fallback object to avoid that all component
+   *     golden tests that use the component's re-exported alerts.libsonnet
+   *     have to fully define the monitoring component parameter.
+   * <3> This example assumes that component openshift4-monitoring provides
+   *     parameter `alerts` which has fields `ignoreNames` and
+   *     `customAnnotations` in a format suitable for this library.
+   */
   global_alert_params:: {
+    /**
+     * \brief list of alert names (field `alert`) to filter out
+     *
+     * This field allows the monitoring component to inject a globally defined
+     * list of alerts to drop in `filterRules`, `filterPatchRules`, and
+     * `renderGroups`.
+     *
+     * Note that this field must contain alert names as they are processed by
+     * the library before any potential name patching by `patchRule`.
+     */
     ignoreNames: [],
+    /**
+     * \brief map of alert names (field `alert`) to object defining additional annotations for the matching alert
+     *
+     * This field allows the monitoring component to inject a globally defined
+     * object containing additional alert annotations. Top-level keys in this
+     * object are alert names and values are expected to be objects with
+     * string keys and values and are merged into the target alert's
+     * `annotations`.
+     *
+     * Note that this field must contain alert names as they are processed by
+     * the library before any potential name patching by `patchRule`.
+     */
     customAnnotations: {},
   },
   /**
@@ -179,7 +229,9 @@ local inv = com.inventory();
    * This function assumes that the rules are defined in the hierarchy in an
    * object whose fields each represent a rule group. The function also
    * assumes that each rule group is defined as an object which uses scheme
-   * '(alert:|record:)rulename' for the field names.
+   * '(alert:|record:)rulename' for the field names. Finally, the function
+   * assumes that each value of a rule key is a valid alerting or recording
+   * rule (matching the prefix of the key).
    *
    * Option
    *
@@ -189,6 +241,20 @@ local inv = com.inventory();
    *   Alert names to drop from the rendered rules.
    * \arg patches
    *   Rule patches to apply to the rules.
+   *
+   * Note that this function doesn't apply the full `filterPatchRules` logic:
+   * We patch alerts to have the common Project Syn labels and apply any
+   * custom annotations defined in `global_alert_params.customAnnotations`.
+   * However, alert names are never patched.
+   *
+   * Additionally, we run each resulting alert group through `filterRules()`
+   * which enables users to disable alerts created through `renderGroups` via
+   * `global_alert_params.ignoreNames`. However, recording rules are always
+   * preserved by this `filterRules` call.
+   *
+   * Users who need name patching or recording rule filtering will need to
+   * apply `filterPatchRules()` with appropriate arguments to each list
+   * element returned by this function.
    *
    * \return
    *   A single list suitable to be used in a `PrometheusRule` manifest as
