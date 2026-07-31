@@ -229,9 +229,10 @@ local inv = com.inventory();
    * This function assumes that the rules are defined in the hierarchy in an
    * object whose fields each represent a rule group. The function also
    * assumes that each rule group is defined as an object which uses scheme
-   * '(alert:|record:)rulename' for the field names. Finally, the function
-   * assumes that each value of a rule key is a valid alerting or recording
-   * rule (matching the prefix of the key).
+   * '(alert:|record:)rulename' for the field names. The function will raise a
+   * compilation error on malformed field names. Finally, the function assumes
+   * that each value of a rule key is a valid alerting or recording rule
+   * (matching the prefix of the key).
    *
    * Option
    *
@@ -268,7 +269,13 @@ local inv = com.inventory();
           {
             name: group_name,
             rules: [
-              local rnamekey = std.splitLimit(rname, ':', 1);
+              local rnamekey =
+                local k = std.splitLimit(rname, ':', 1);
+                assert
+                  std.member([ 'alert', 'record' ], k[0]) :
+                  'Invalid custom rule key "%s". '
+                  + 'The component expects that custom rule keys are prefixed with either "alert:" or "record:"' % [ rname ];
+                k;
               $.patchRule(
                 rules[group_name][rname] {
                   // transform source key into "alert: alertname" or
