@@ -198,4 +198,58 @@ expected:
       - matchers:
         - "other = \"true\""
         receiver: "other"
-      - receiver: "team_default_clumsy-donkeys"
+      - continue: false
+        receiver: "team_default_clumsy-donkeys"
+
+  alertmanagerConfigMultiReceiver:
+    receivers:
+    - name: "foo"
+    - name: "__null"
+    route:
+      routes:
+      - matchers:
+        - "alertname = Watchdog"
+        receiver: "heartbeat"
+        repeat_interval: "60s"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"base|overridden\""
+        receiver: "team_default_chubby-cockroaches"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"base|overridden\""
+        receiver: "team_legacy_chubby-cockroaches"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"instance-ns|ns-string|openshift-monitoring|syn-espejote\""
+        receiver: "team_default_clumsy-donkeys"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"instance-ns|ns-string|openshift-monitoring|syn-espejote\""
+        receiver: "team_legacy_clumsy-donkeys"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"ns-object|same-ns\""
+        receiver: "team_default_lovable-lizards"
+      - continue: true
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"ns-object|same-ns\""
+        receiver: "team_legacy_lovable-lizards"
+      - continue: false
+        matchers:
+        - "syn_team = \"\""
+        - "namespace =~ \"base|overridden|instance-ns|ns-string|openshift-monitoring|syn-espejote|ns-object|same-ns\""
+        receiver: "__null"
+      - matchers:
+        - "other = \"true\""
+        receiver: "other"
+      - continue: true
+        receiver: "team_default_clumsy-donkeys"
+      - continue: false
+        receiver: "team_legacy_clumsy-donkeys"

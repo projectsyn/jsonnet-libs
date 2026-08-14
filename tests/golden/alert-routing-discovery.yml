@@ -56,13 +56,105 @@
                "receiver": "other"
             },
             {
+               "continue": false,
                "receiver": "team_default_clumsy-donkeys"
             }
          ]
       }
    },
+   "alertmanagerConfigMultiReceiver": {
+      "receivers": [
+         {
+            "name": "foo"
+         },
+         {
+            "name": "__null"
+         }
+      ],
+      "route": {
+         "routes": [
+            {
+               "matchers": [
+                  "alertname = Watchdog"
+               ],
+               "receiver": "heartbeat",
+               "repeat_interval": "60s"
+            },
+            {
+               "continue": true,
+               "matchers": [
+                  "syn_team = \"\"",
+                  "namespace =~ \"base|overridden\""
+               ],
+               "receiver": "team_default_chubby-cockroaches"
+            },
+            {
+               "continue": true,
+               "matchers": [
+                  "syn_team = \"\"",
+                  "namespace =~ \"base|overridden\""
+               ],
+               "receiver": "team_legacy_chubby-cockroaches"
+            },
+            {
+               "continue": true,
+               "matchers": [
+                  "syn_team = \"\"",
+                  "namespace =~ \"instance-ns|ns-string|openshift-monitoring|syn-espejote\""
+               ],
+               "receiver": "team_default_clumsy-donkeys"
+            },
+            {
+               "continue": true,
+               "matchers": [
+                  "syn_team = \"\"",
+                  "namespace =~ \"instance-ns|ns-string|openshift-monitoring|syn-espejote\""
+               ],
+               "receiver": "team_legacy_clumsy-donkeys"
+            },
+            {
+               "continue": true,
+               "matchers": [
+                  "syn_team = \"\"",
+                  "namespace =~ \"ns-object|same-ns\""
+               ],
+               "receiver": "team_default_lovable-lizards"
+            },
+            {
+               "continue": true,
+               "matchers": [
+                  "syn_team = \"\"",
+                  "namespace =~ \"ns-object|same-ns\""
+               ],
+               "receiver": "team_legacy_lovable-lizards"
+            },
+            {
+               "continue": false,
+               "matchers": [
+                  "syn_team = \"\"",
+                  "namespace =~ \"base|overridden|instance-ns|ns-string|openshift-monitoring|syn-espejote|ns-object|same-ns\""
+               ],
+               "receiver": "__null"
+            },
+            {
+               "matchers": [
+                  "other = \"true\""
+               ],
+               "receiver": "other"
+            },
+            {
+               "continue": true,
+               "receiver": "team_default_clumsy-donkeys"
+            },
+            {
+               "continue": false,
+               "receiver": "team_legacy_clumsy-donkeys"
+            }
+         ]
+      }
+   },
    "debugData": {
-      "alertmanager": "\"receivers\":\n- \"name\": \"foo\"\n- \"name\": \"__null\"\n\"route\":\n  \"routes\":\n  - \"matchers\":\n    - \"alertname = Watchdog\"\n    \"receiver\": \"heartbeat\"\n    \"repeat_interval\": \"60s\"\n  - \"continue\": true\n    \"matchers\":\n    - \"syn_team = \\\"\\\"\"\n    - \"namespace =~ \\\"base|overridden\\\"\"\n    \"receiver\": \"team_default_chubby-cockroaches\"\n  - \"continue\": true\n    \"matchers\":\n    - \"syn_team = \\\"\\\"\"\n    - \"namespace =~ \\\"instance-ns|ns-string|openshift-monitoring|syn-espejote\\\"\"\n    \"receiver\": \"team_default_clumsy-donkeys\"\n  - \"continue\": true\n    \"matchers\":\n    - \"syn_team = \\\"\\\"\"\n    - \"namespace =~ \\\"ns-object|same-ns\\\"\"\n    \"receiver\": \"team_default_lovable-lizards\"\n  - \"continue\": false\n    \"matchers\":\n    - \"syn_team = \\\"\\\"\"\n    - \"namespace =~ \\\"base|overridden|instance-ns|ns-string|openshift-monitoring|syn-espejote|ns-object|same-ns\\\"\"\n    \"receiver\": \"__null\"\n  - \"matchers\":\n    - \"other = \\\"true\\\"\"\n    \"receiver\": \"other\"\n  - \"receiver\": \"team_default_clumsy-donkeys\"",
+      "alertmanager": "\"receivers\":\n- \"name\": \"foo\"\n- \"name\": \"__null\"\n\"route\":\n  \"routes\":\n  - \"matchers\":\n    - \"alertname = Watchdog\"\n    \"receiver\": \"heartbeat\"\n    \"repeat_interval\": \"60s\"\n  - \"continue\": true\n    \"matchers\":\n    - \"syn_team = \\\"\\\"\"\n    - \"namespace =~ \\\"base|overridden\\\"\"\n    \"receiver\": \"team_default_chubby-cockroaches\"\n  - \"continue\": true\n    \"matchers\":\n    - \"syn_team = \\\"\\\"\"\n    - \"namespace =~ \\\"instance-ns|ns-string|openshift-monitoring|syn-espejote\\\"\"\n    \"receiver\": \"team_default_clumsy-donkeys\"\n  - \"continue\": true\n    \"matchers\":\n    - \"syn_team = \\\"\\\"\"\n    - \"namespace =~ \\\"ns-object|same-ns\\\"\"\n    \"receiver\": \"team_default_lovable-lizards\"\n  - \"continue\": false\n    \"matchers\":\n    - \"syn_team = \\\"\\\"\"\n    - \"namespace =~ \\\"base|overridden|instance-ns|ns-string|openshift-monitoring|syn-espejote|ns-object|same-ns\\\"\"\n    \"receiver\": \"__null\"\n  - \"matchers\":\n    - \"other = \\\"true\\\"\"\n    \"receiver\": \"other\"\n  - \"continue\": false\n    \"receiver\": \"team_default_clumsy-donkeys\"",
       "applications": "[\"espejote\",\"non-existing\",\"no-ns\",\"ns-string\",\"ns-object\",\"base as ns-in-base\",\"base as ns-overridden\",\"non-existing as still-non-existing\",\"same-ns-1\",\"same-ns-2\",\"openshift4-monitoring\",\"no-ns as no-ns-team\",\"no-ns as no-ns-team2\",\"instance-ns\"]",
       "apps_without_namespaces": "- \"no-ns\"\n- \"no-ns as no-ns-team\"\n- \"no-ns as no-ns-team2\"\n- \"non-existing\"\n- \"non-existing as still-non-existing\"",
       "discovered_namespaces": "\"base as ns-in-base\": \"base\"\n\"base as ns-overridden\": \"overridden\"\n\"espejote\": \"syn-espejote\"\n\"instance-ns\": \"instance-ns\"\n\"no-ns\": null\n\"no-ns as no-ns-team\": null\n\"no-ns as no-ns-team2\": null\n\"non-existing\": null\n\"non-existing as still-non-existing\": null\n\"ns-object\": \"ns-object\"\n\"ns-string\": \"ns-string\"\n\"openshift4-monitoring\": \"openshift-monitoring\"\n\"same-ns-1\": \"same-ns\"\n\"same-ns-2\": \"same-ns\"",
