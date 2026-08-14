@@ -43,7 +43,20 @@ local alertmanagerConfig =
   else
     rendered;
 
+local alertmanagerConfigMultiReceiver =
+  local rendered = ard.alertmanagerConfig(
+    adParams { team_receiver_formats: [ 'team_default_%s', 'team_legacy_%s' ] }, amConfig, nullR, fallback_team,
+  );
+  if rendered != expected.alertmanagerConfigMultiReceiver then
+    error
+      'Error rendering alertmanager config for alert routing discovery with multiple receivers\n' +
+      'Expected: %s\n' % [ expected.alertmanagerConfig ] +
+      'Got: %s\n' % [ rendered ]
+  else
+    rendered;
+
 {
   debugData: debugData,
   alertmanagerConfig: alertmanagerConfig,
+  alertmanagerConfigMultiReceiver: alertmanagerConfigMultiReceiver,
 }
