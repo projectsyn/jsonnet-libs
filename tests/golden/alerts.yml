@@ -33,6 +33,17 @@
             }
          },
          {
+            "alert": "SYN_nullteam",
+            "annotations": {
+               "summary": "explicit syn_team=null test"
+            },
+            "expr": "vector(1)",
+            "labels": {
+               "syn": "true",
+               "syn_component": "alerts"
+            }
+         },
+         {
             "expr": "sum(foo)",
             "record": "sum:foo"
          }
@@ -70,6 +81,17 @@
                "syn_team": "clumsy-donkeys",
                "test": "prefixed patch"
             }
+         },
+         {
+            "alert": "SYN_nullteam",
+            "annotations": {
+               "summary": "explicit syn_team=null test"
+            },
+            "expr": "vector(1)",
+            "labels": {
+               "syn": "true",
+               "syn_component": "alerts"
+            }
          }
       ]
    },
@@ -105,6 +127,17 @@
                "syn_team": "clumsy-donkeys",
                "test": "prefixed patch"
             }
+         },
+         {
+            "alert": "nullteam",
+            "annotations": {
+               "summary": "explicit syn_team=null test"
+            },
+            "expr": "vector(1)",
+            "labels": {
+               "syn": "true",
+               "syn_component": "alerts"
+            }
          }
       ]
    },
@@ -119,6 +152,16 @@
             "expr": "foo < 10",
             "labels": {
                "severity": "warning"
+            }
+         },
+         {
+            "alert": "nullteam",
+            "annotations": {
+               "summary": "explicit syn_team=null test"
+            },
+            "expr": "vector(1)",
+            "labels": {
+               "syn_team": null
             }
          },
          {
@@ -149,6 +192,16 @@
             "expr": "foo < 2",
             "labels": {
                "severity": "critical"
+            }
+         },
+         {
+            "alert": "nullteam",
+            "annotations": {
+               "summary": "explicit syn_team=null test"
+            },
+            "expr": "vector(1)",
+            "labels": {
+               "syn_team": null
             }
          }
       ]
@@ -193,6 +246,17 @@
             "syn_component": "alerts",
             "syn_team": "clumsy-donkeys",
             "test": "prefixed patch"
+         }
+      },
+      {
+         "alert": "SYN_nullteam",
+         "annotations": {
+            "summary": "explicit syn_team=null test"
+         },
+         "expr": "vector(1)",
+         "labels": {
+            "syn": "true",
+            "syn_component": "alerts"
          }
       },
       {
@@ -243,6 +307,17 @@
          }
       },
       {
+         "alert": "nullteam",
+         "annotations": {
+            "summary": "explicit syn_team=null test"
+         },
+         "expr": "vector(1)",
+         "labels": {
+            "syn": "true",
+            "syn_component": "alerts"
+         }
+      },
+      {
          "expr": "sum(foo)",
          "record": "sum:foo"
       }
@@ -280,6 +355,17 @@
                   "syn_component": "alerts",
                   "syn_team": "clumsy-donkeys",
                   "test": "prefixed patch"
+               }
+            },
+            {
+               "alert": "nullteam",
+               "annotations": {
+                  "summary": "explicit syn_team=null test"
+               },
+               "expr": "vector(1)",
+               "labels": {
+                  "syn": "true",
+                  "syn_component": "alerts"
                }
             },
             {
