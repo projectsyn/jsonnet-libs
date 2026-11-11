@@ -37,6 +37,15 @@ local testRules = {
     'alert:IgnoredAlert': {
       expr: 'vector(1)',
     },
+    'alert:nullteam': {
+      expr: 'vector(1)',
+      annotations: {
+        summary: 'explicit syn_team=null test',
+      },
+      labels: {
+        syn_team: null,
+      },
+    },
   },
 };
 

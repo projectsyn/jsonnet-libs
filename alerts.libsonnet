@@ -125,6 +125,13 @@ local inv = com.inventory();
    * other parts of the component to the rule (e.g. `syn=true`), as well as
    * ensuring that the alert name is prefixed with `SYN_`.
    *
+   * The function handles alert label `syn_team` specially. If the label is
+   * provided by the user and the label value is non-null, the value is
+   * preserved. If the label is provided with value `null`, the label is
+   * dropped. If the label isn't provided, the function tries to determine the
+   * team that owns the component instance which defines the alert and sets
+   * the label value to that team.
+   *
    * The function also reads any custom annotations from library field
    * `global_alert_params.customAnnotations` and applies those to the alert
    * rule.
@@ -161,6 +168,15 @@ local inv = com.inventory();
           rule.labels.syn_team
         else
           syn_teams.teamForApplication(inv.parameters._instance);
+      local syn_team_label_patch = if syn_team_label != null then {
+        syn_team: syn_team_label,
+      } else {
+        // NOTE(sg): If syn_team_label is null either because we didn't find a
+        // team for the instance, or because the alert author explicitly set
+        // it to null to avoid static team-based routing, we drop the label
+        // from the alert by hiding the field.
+        syn_team:: null,
+      };
       rule {
         // Change alert names so we don't get multiple alerts with the same
         // name, as the logging operator deploys its own copy of these
@@ -173,8 +189,7 @@ local inv = com.inventory();
           syn_component: inv.parameters._instance,
           // mark alert as belonging to the team in whose context the
           // function is called.
-          [if syn_team_label != null then 'syn_team']: syn_team_label,
-        },
+        } + syn_team_label_patch,
         annotations+:
           std.get($.global_alert_params.customAnnotations, super.alert, {}),
       } + com.makeMergeable(rulepatch),

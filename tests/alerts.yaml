@@ -45,5 +45,12 @@ expected:
         syn_component: alerts
         syn_team: clumsy-donkeys
         test: prefixed patch
+    - alert: SYN_nullteam
+      expr: vector(1)
+      annotations:
+        summary: explicit syn_team=null test
+      labels:
+        syn: "true"
+        syn_component: alerts
     - record: sum:foo
       expr: sum(foo)
